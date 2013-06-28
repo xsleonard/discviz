@@ -1,0 +1,11 @@
+SERVER_NAME = '127.0.0.1:5000'
+DEBUG = True
+NEO4J_URI = 'http://localhost:7474/db/data'
+NEO4J_USER = ''
+NEO4J_PASS = ''
+LOGGING = True
+SESSION_COOKIE_DOMAIN = '127.0.0.1'
+SESSION_COOKIE_HTTPONLY = True
+SECRET_KEY = '\x1b>g\x95q\xd5\x8c\xd6\xf1\xe0<\xa6\x17\x8f\xb0\x97\xca\x82\x1d\xb9X\xa7si21\xcc\x00\xb9\xcb\x7f('
+SESSION_SALT = '\x9d)^s\x97\xcc\xa1]\x0eWM\xcck\x11j\x832[\x99\x1a\x16\x95\x812\x13\xdc\xcf\xc0\xc6@\x1fw'
+CONFIG_NAME = 'local_dev'
