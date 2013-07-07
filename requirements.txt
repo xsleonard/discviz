@@ -1,3 +1,6 @@
 flask
 flask-failsafe
 -e git://github.com/xsleonard/bulbs.git@patch-1#egg=bulbs
+flask-sqlalchemy
+lxml
+psycopg2

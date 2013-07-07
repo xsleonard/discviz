@@ -1,13 +1,16 @@
 import os
 import logging
-from urlparse import urljoin
 from bulbs.neo4jserver import (Graph as NeoGraph, Config as NeoConfig,
                                NEO4J_URI)
-from flask import (Flask, current_app, jsonify, render_template, request, g,
-                   session, json, abort)
+from flask import Flask, json
 from flask.sessions import SecureCookieSession, SecureCookieSessionInterface
+from flask.ext.sqlalchemy import SQLAlchemy
 
 __version__ = '0.10'
+
+
+db = SQLAlchemy()
+
 
 def init_graph(app):
     user = app.config.get('NEO4J_USER')
@@ -28,12 +31,14 @@ def register_blueprints(app):
     app.register_blueprint(frontend)
 
 
-def load_config(app, subdomain=''):
+def load_config(app, subdomain='', config=None):
     """
     Grab config from DISCVIZ_SETTINGS envvar or use default dev config.
     Update the SERVER_NAME based on subdomain
     """
-    if os.environ.get('DISCVIZ_SETTINGS') is not None:
+    if config is not None:
+        app.config.from_object('config.{0}'.format(config))
+    elif os.environ.get('DISCVIZ_SETTINGS') is not None:
         app.config.from_envvar('DISCVIZ_SETTINGS')
     else:
         app.config.from_object('config.local_dev')
@@ -57,7 +62,8 @@ def attach_loggers(app):
         app.logger.setLevel(logging.DEBUG)
     else:
         app.logger.setLevel(logging.INFO)
-    app.graph.config.set_logger(logging.DEBUG)
+    if app.graph is not None:
+        app.graph.config.set_logger(logging.DEBUG)
 
 
 def attach_before_request_handlers(app):
@@ -86,12 +92,19 @@ class JSONSecureCookieSessionInterface(SecureCookieSessionInterface):
     session_class = JSONSecureCookieSession
 
 
-def create_app(subdomain=''):
+def create_app(subdomain='', config=None):
     app = Flask(__name__)
-    load_config(app, subdomain)
-    if app.config.get('HEROKU'):
-        heroku.init_app(app)
-    init_graph(app)
+    load_config(app, subdomain=subdomain, config=config)
+    #if app.config.get('HEROKU'):
+        #heroku.init_app(app)
+    if app.config['ENABLE_NEO4J']:
+        init_graph(app)
+    else:
+        app.graph = None
+    if app.config['ENABLE_SQL']:
+        db.init_app(app)
+    else:
+        app.db = None
     if app.config.get('LOGGING'):
         attach_loggers(app)
     app.session_interface = JSONSecureCookieSessionInterface()

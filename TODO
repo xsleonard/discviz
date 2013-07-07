@@ -1,0 +1,25 @@
+Convert discogs xml data to neo4j
+	-Read discogs format
+	-Write XML parser
+	-Make neo4j/bulbs models that match the data we want
+	-Add indices necessary for neo4j performance
+
+Choose javascript visualization library
+	http://sigmajs.org/
+	http://d3js.org/
+
+Integrate with neo4j, flask:
+	http://maxdemarzi.com/2012/04/12/using-sigma-js-with-neo4j/
+	-Get a GEFX file (from gephi?)
+		-- Might have to be generated from browser parameters
+	--Generate XML file to render
+		-- Construct a Cypher query from client inputs 
+			--(can bulbs do this automatically/like sqlalchemy?)
+		--Convert query response to the XML file
+	-- Load XML in visualizer with javascript
+		-- Or send raw data and construct XML in javascript
+
+Optional client side visualization (see if the graphs are good):
+	http://gephi.org/
+	https://marketplace.gephi.org/plugin/neo4j-graph-database-support/
+
